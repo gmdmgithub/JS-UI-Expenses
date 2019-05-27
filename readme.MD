@@ -6,7 +6,7 @@ First approach is to create JS UI expense object will contain data:
 Name
 Comment
 Period
-OneTime
+Period-type
 Amount
 CurrencyCode
 Date

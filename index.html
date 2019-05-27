@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>My expenses list</title>
+    <script src="./static/app.js"></script>
+    <link rel="stylesheet" href="./static/main.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+        integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous" />
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/superhero/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-LS4/wo5Z/8SLpOLHs0IbuPAGOWTx30XSoZJ8o7WKH0UJhRpjXXTpODOjfVnNjeHu" crossorigin="anonymous" />
+</head>
+
+<body>
+    <div class="container mt-4">
+        <h1 class="display-4 text-center">
+            <i class="fas fa-wallet text-primary"></i> My
+            <span class="text-primary">Expenses</span>
+        </h1>
+        <form id="expenses-form">
+            <div class="form-group">
+                <label for="name">Name</label><input type="text" id="name" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="comment">Comment</label>
+                <input type="text" id="comment" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="period">Period</label>
+                <div class="row">
+                    <div class="col-8">
+                        <input type="number" id="period-value" placeholder="value" class="form-control" />
+                    </div>
+                    <div class="col-4">
+                        <select name="period" id="period-type" class="form-control">
+                            <option value="0">Type&nbsp;&nbsp;--none--</option>
+                            <option value="1">Day</option>
+                            <option value="2">Month</option>
+                            <option value="3">Year</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="amount">Amount</label>
+                <div class="row">
+                    <div class="col-8">
+                        <input type="number" id="amount" placeholder="amount" class="form-control" />
+                    </div>
+                    <div class="col-4">
+                        <select name="period" id="period-type" class="form-control">
+                            <option value="0">Currency&nbsp;&nbsp;--choose--</option>
+                            <option value="1">USD</option>
+                            <option value="2">EUR</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="date">Date</label>
+                <input type="date" name="date" id="date" class="form-control" />
+            </div>
+            <input type="submit" value="Add expense" class="btn btn-primary btn-block">
+        </form>
+    </div>
+</body>
+
+</html>
