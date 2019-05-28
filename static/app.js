@@ -57,6 +57,17 @@ class UI{ // view is static
 
         tableList.appendChild(row);
     }
+
+    static clearForm(elements){
+        elements.forEach(element=>{
+            
+            if(element.Node == "text" || element.type == "number" || element.type == "date")
+                element.value = '';
+            else if (element.nodeName == "SELECT")
+                element.value = '0';
+            
+        })
+    }
 }
 
 // Store class - handle storage (first local storage)
@@ -68,6 +79,7 @@ document.addEventListener("DOMContentLoaded", UI.showExpenses)
 // Event - add
 
 document.querySelector("#expense-form").addEventListener("submit", (e)=>{
+    //submit cannot reload the page
     e.preventDefault();
     const name =document.querySelector("#name").value;
     const comment =document.querySelector("#comment").value;
@@ -81,7 +93,10 @@ document.querySelector("#expense-form").addEventListener("submit", (e)=>{
     // console.log(expense);
 
     UI.addExpenseToList(expense);
+    UI.clearForm(document.querySelector("#expense-form").querySelectorAll("input, select"))
 
 })
+
+
 
 // Event - remove
