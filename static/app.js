@@ -9,6 +9,14 @@ class Expense{
         this.currency = currency;
         this.date = date;
     }
+    validate(){
+        if(this.name.trim().length < 1 || this.amount.trim().length < 1 || this.currency == "0")
+            return false
+        if(this.periodValue.trim().length > 0 && this.periodType == "0")
+            return false
+        // TODO - check date 
+        return true;
+    }
 }
 
 // UI Class - handle UI
@@ -61,12 +69,31 @@ class UI{ // view is static
     static clearForm(elements){
         elements.forEach(element=>{
             
-            if(element.Node == "text" || element.type == "number" || element.type == "date")
+            if(element.type == "text" || element.type == "number" || element.type == "date")
                 element.value = '';
             else if (element.nodeName == "SELECT")
                 element.value = '0';
             
         })
+    }
+    static deleteRow(el){
+        // confirm?
+        el.parentElement.parentElement.remove()
+        UI.showAlert("Row removed","info");
+    }
+
+    static showAlert(message,className){
+
+        const div = document.createElement("div");
+        div.className=`alert alert-${className}`;
+        div.appendChild(document.createTextNode(message))
+        const container = document.querySelector(".container");
+        const form = document.querySelector("#expense-form");
+        container.insertBefore(div,form);
+        setTimeout(()=>{
+            document.querySelector(".alert").remove();
+        },2000)
+
     }
 }
 
@@ -89,14 +116,29 @@ document.querySelector("#expense-form").addEventListener("submit", (e)=>{
     const currency =document.querySelector("#currency-type").value;
     const date =document.querySelector("#date").value;
 
+    //validation
+
     const expense = new Expense(name,comment, periodType,periodValue , amount, currency, date);
     // console.log(expense);
 
-    UI.addExpenseToList(expense);
-    UI.clearForm(document.querySelector("#expense-form").querySelectorAll("input, select"))
+    if (expense.validate()){
+        UI.showAlert("Element added to the list","success")
+        UI.addExpenseToList(expense);
+        UI.clearForm(document.querySelector("#expense-form").querySelectorAll("input, select"))
+    }else{
+        UI.showAlert("Form is invalid", "danger")
+    }
 
 })
 
 
 
 // Event - remove
+
+document.querySelector("#expenses-list").addEventListener("click", e =>{
+    // console.log(e.target);
+    e.preventDefault();
+    if(e.target.classList.contains("delete"))
+        UI.deleteRow(e.target);
+    
+})
