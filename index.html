@@ -20,7 +20,7 @@
             <i class="fas fa-wallet text-primary"></i> My
             <span class="text-primary">Expenses</span>
         </h1>
-        <form id="expenses-form">
+        <form id="expense-form">
             <div class="form-group">
                 <label for="name">Name</label><input type="text" id="name" class="form-control" />
             </div>
@@ -37,9 +37,9 @@
                     <div class="col-4">
                         <select name="period" id="period-type" class="form-control">
                             <option value="0">Type&nbsp;&nbsp;--none--</option>
-                            <option value="1">Day</option>
-                            <option value="2">Month</option>
-                            <option value="3">Year</option>
+                            <option value="DAY">Day</option>
+                            <option value="MONTH">Month</option>
+                            <option value="YEAR">Year</option>
                         </select>
                     </div>
                 </div>
@@ -52,10 +52,10 @@
                         <input type="number" id="amount" placeholder="amount" class="form-control" step="0.01"/>
                     </div>
                     <div class="col-4">
-                        <select name="period" id="period-type" class="form-control">
+                        <select name="currency" id="currency-type" class="form-control">
                             <option value="0">Currency&nbsp;&nbsp;--choose--</option>
-                            <option value="1">USD</option>
-                            <option value="2">EUR</option>
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
                         </select>
                     </div>
                 </div>

@@ -67,4 +67,21 @@ document.addEventListener("DOMContentLoaded", UI.showExpenses)
 
 // Event - add
 
+document.querySelector("#expense-form").addEventListener("submit", (e)=>{
+    e.preventDefault();
+    const name =document.querySelector("#name").value;
+    const comment =document.querySelector("#comment").value;
+    const periodType =document.querySelector("#period-type").value;
+    const periodValue =document.querySelector("#period-value").value;
+    const amount =document.querySelector("#amount").value;
+    const currency =document.querySelector("#currency-type").value;
+    const date =document.querySelector("#date").value;
+
+    const expense = new Expense(name,comment, periodType,periodValue , amount, currency, date);
+    // console.log(expense);
+
+    UI.addExpenseToList(expense);
+
+})
+
 // Event - remove
