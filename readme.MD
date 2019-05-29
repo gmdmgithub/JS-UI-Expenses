@@ -2,7 +2,7 @@
 
 ## Quick Start
 
-First approach is to create JS UI expense object will contain data:
+First approach is to create JS UI expense object with fields:
 Name
 Comment
 Period

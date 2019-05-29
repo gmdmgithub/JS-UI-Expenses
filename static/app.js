@@ -65,7 +65,7 @@ class UI {
         //         date : "2019-05-03T23:28:56.782Z"
         //     }
         // ];
-        const expenses = Store.getData(expensesCollName);
+        const expenses = LocalStore.getData(expensesCollName);
         // console.log(expenses);
 
         expenses.forEach(expense => {
@@ -119,35 +119,7 @@ class UI {
     }
 }
 
-// Store class - handle storage (first local storage)
 
-class Store {
-    static getData(collName) {
-        let collection = [];
-        if (localStorage.getItem(collName) != null) {
-            collection = JSON.parse(localStorage.getItem(collName));
-        }
-        return collection;
-    }
-
-    static addData(data) {
-        let array = Store.getData(data.collectionName());
-
-        let maxID = array.reduce((acc, val) => {
-            return acc > val.id ? acc : val.id;
-        }, 0);
-        data.id = maxID + 1;
-
-        array.push(data);
-        localStorage.setItem(data.collectionName(), JSON.stringify(array));
-    }
-
-    static removeData(id, collName) {
-        let array = Store.getData(collName);
-        let newData = array.filter(arr => arr.id != id);
-        localStorage.setItem(collName, JSON.stringify(newData));
-    }
-}
 
 // Events - display expense
 
@@ -183,7 +155,7 @@ document.querySelector("#expense-form").addEventListener("submit", e => {
     if (expense.validate()) {
         UI.showAlert("Element added to the list", "success");
         UI.addExpenseToList(expense);
-        Store.addData(expense);
+        LocalStore.addData(expense);
         UI.clearForm(
             document.querySelector("#expense-form").querySelectorAll("input, select")
         );
@@ -201,7 +173,38 @@ document.querySelector("#expenses-list").addEventListener("click", e => {
         const id = e.target.parentElement.querySelector("a").href.split("#")[1];
         if (id) {
             UI.deleteRow(e.target);
-            Store.removeData(id, expensesCollName);
+            LocalStore.removeData(id, expensesCollName);
         }
     }
 });
+
+
+// Store class - handle storage (first local storage)
+
+class LocalStore {
+    static getData(collName) {
+        let collection = [];
+        if (localStorage.getItem(collName) != null) {
+            collection = JSON.parse(localStorage.getItem(collName));
+        }
+        return collection;
+    }
+
+    static addData(data) {
+        let array = LocalStore.getData(data.collectionName());
+
+        let maxID = array.reduce((acc, val) => {
+            return acc > val.id ? acc : val.id;
+        }, 0);
+        data.id = maxID + 1;
+
+        array.push(data);
+        localStorage.setItem(data.collectionName(), JSON.stringify(array));
+    }
+
+    static removeData(id, collName) {
+        let array = LocalStore.getData(collName);
+        let newData = array.filter(arr => arr.id != id);
+        localStorage.setItem(collName, JSON.stringify(newData));
+    }
+}
