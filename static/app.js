@@ -130,13 +130,13 @@ document.addEventListener("DOMContentLoaded", UI.showExpenses);
 document.querySelector("#expense-form").addEventListener("submit", e => {
     //submit cannot reload the page
     e.preventDefault();
-    const name = document.querySelector("#name").value;
-    const comment = document.querySelector("#comment").value;
-    const periodType = document.querySelector("#period-type").value;
-    const periodValue = document.querySelector("#period-value").value;
-    const amount = document.querySelector("#amount").value;
-    const currency = document.querySelector("#currency-type").value;
-    const date = document.querySelector("#date").value;
+    const name = getFieldValue("name");
+    const comment = getFieldValue("comment");
+    const periodType = getFieldValue("period-type");
+    const periodValue = getFieldValue("period-value");
+    const amount = getFieldValue("amount");
+    const currency = getFieldValue("currency-type");
+    const date = getFieldValue("date");
 
     //validation
 
@@ -163,6 +163,10 @@ document.querySelector("#expense-form").addEventListener("submit", e => {
         UI.showAlert("Form is invalid", "danger");
     }
 });
+
+function getFieldValue(id){
+    return document.querySelector(`#${id}`).value;
+}
 
 // Event - remove
 
