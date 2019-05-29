@@ -9,3 +9,9 @@ input[type=number]::-webkit-outer-spin-button {
 input[type=number] {
     -moz-appearance:textfield;
 }
+.alert{
+    border-radius: 5px;
+}
+.btn{
+    border-radius: 5px;
+}
