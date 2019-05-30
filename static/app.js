@@ -1,4 +1,5 @@
 const expensesCollName = "expenses";
+let editID = -1;
 // Expense Class - object
 class Expense {
     constructor(
@@ -71,6 +72,13 @@ class UI {
         expenses.forEach(expense => {
             UI.addExpenseToList(expense);
         });
+
+        UI.showCancelBtn(false)
+    }
+
+    static showCancelBtn(show){
+        let cancelBTN = document.querySelector("#cancel-btn");
+        cancelBTN.style.display = show?'block':'none';
     }
 
     static addExpenseToList(expense) {
@@ -83,10 +91,21 @@ class UI {
         <td>${expense.currency}</td>
         <td><a href="#${
           expense.id
-        }" class="btn btn-danger delete">Delete</a></td>
+        }" class="btn btn-danger delete">Delete</a>
+        <a href="#${
+            expense.id
+          }" class="btn btn-info edit">Edit</a>
+        </td>
         `;
 
         tableList.appendChild(row);
+    }
+
+    static refreshExpenses(){
+
+        document.querySelector("#expenses-list").innerHTML = "";
+        UI.showExpenses()
+
     }
 
     static clearForm(elements) {
@@ -104,6 +123,28 @@ class UI {
         // confirm?
         el.parentElement.parentElement.remove();
         UI.showAlert("Row removed", "info");
+        UI.clearForm(document.querySelector("#expense-form").querySelectorAll("input, select"))
+        editID = -1;
+    }
+
+    static editRow(){
+
+        let data = LocalStore.getData(expensesCollName);
+
+        const exp1 = data.filter(exp => exp.id == editID)
+
+        if (exp1.length == 1 ){
+            const e = exp1[0]
+            setFieldValue("name", e.name);
+            setFieldValue("comment", e.comment);
+            setFieldValue("period-type", e.periodType);
+            setFieldValue("period-value", e.periodValue);
+            setFieldValue("amount", e.amount);
+            setFieldValue("currency-type", e.currency);
+            setFieldValue("date", e.date);
+
+        }
+
     }
 
     static showAlert(message, className) {
@@ -119,6 +160,12 @@ class UI {
     }
 }
 
+document.querySelector("#cancel-btn").addEventListener("click", e=>{
+    e.preventDefault();
+    UI.showCancelBtn(false)
+    UI.clearForm(document.querySelector("#expense-form").querySelectorAll("input, select"))
+    editID = -1;
+})
 
 
 // Events - display expense
@@ -130,6 +177,13 @@ document.addEventListener("DOMContentLoaded", UI.showExpenses);
 document.querySelector("#expense-form").addEventListener("submit", e => {
     //submit cannot reload the page
     e.preventDefault();
+    submitData()
+  
+    
+});
+
+function submitData(){
+
     const name = getFieldValue("name");
     const comment = getFieldValue("comment");
     const periodType = getFieldValue("period-type");
@@ -138,34 +192,49 @@ document.querySelector("#expense-form").addEventListener("submit", e => {
     const currency = getFieldValue("currency-type");
     const date = getFieldValue("date");
 
-    //validation
-
     const expense = new Expense(
-        -1,
+        editID,
         name,
         comment,
-        periodType,
         periodValue,
+        periodType,
         amount,
         currency,
         date
     );
-    // console.log(expense);
 
-    if (expense.validate()) {
+   
+    
+    if (!expense.validate()) {
+        UI.showAlert("Form is invalid", "danger");
+        return
+    }
+    if(editID > -1){
+        UI.showAlert("Element edited to the list", "success");
+        // console.log(expense);
+        
+        LocalStore.saveData(expense);
+        // TODO - refresh temporary - edit row is expected
+        UI.refreshExpenses()
+    }
+    if(editID == -1){
         UI.showAlert("Element added to the list", "success");
         UI.addExpenseToList(expense);
         LocalStore.addData(expense);
-        UI.clearForm(
-            document.querySelector("#expense-form").querySelectorAll("input, select")
-        );
-    } else {
-        UI.showAlert("Form is invalid", "danger");
     }
-});
+
+    UI.clearForm(document.querySelector("#expense-form").querySelectorAll("input, select"));
+    UI.showCancelBtn(false)
+    editID = -1;
+    
+}
 
 function getFieldValue(id){
     return document.querySelector(`#${id}`).value;
+}
+
+function setFieldValue(id, value){
+    return document.querySelector(`#${id}`).value = value;
 }
 
 // Event - remove
@@ -173,11 +242,20 @@ function getFieldValue(id){
 document.querySelector("#expenses-list").addEventListener("click", e => {
     // console.log(e.target);
     e.preventDefault();
+    const id = e.target.parentElement.querySelector("a").href.split("#")[1];
+
     if (e.target.classList.contains("delete")) {
-        const id = e.target.parentElement.querySelector("a").href.split("#")[1];
         if (id) {
             UI.deleteRow(e.target);
             LocalStore.removeData(id, expensesCollName);
+        }
+    }
+    if(e.target.classList.contains("edit")){
+        console.log("edit hit", id);
+        if (id) {
+            editID = id
+            UI.editRow();
+            UI.showCancelBtn(true)
         }
     }
 });
@@ -204,6 +282,18 @@ class LocalStore {
 
         array.push(data);
         localStorage.setItem(data.collectionName(), JSON.stringify(array));
+    }
+
+    static saveData(data){
+
+        let array = LocalStore.getData(data.collectionName());
+        array.forEach((element, index) =>{
+            if(element.id == data.id)
+               array[index] = data;
+        })
+        localStorage.setItem(data.collectionName(), JSON.stringify(array));
+
+
     }
 
     static removeData(id, collName) {
